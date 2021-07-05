@@ -1,0 +1,9 @@
+.inputField{
+    width: 350px;
+    height: 40px;
+    border-radius: 10px;
+}
+.colorPicker{
+    border: 1px solid black;
+    padding: 7px;
+}

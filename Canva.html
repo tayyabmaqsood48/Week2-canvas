@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="Canvas.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <title>Canvas</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    </head>
+    <body>
+        <div class="container mt-5">
+            
+                    <input type="file" hidden id="file" name="file" accept = "image/*" onchange="loadFile(event)">
+            
+                    <canvas id="canvas" height="450px" width="650px" style="border: 1px solid black;">
+                        Your browser doesn't support this version
+                    </canvas> 
+                    <p id="Error" style="font-size:26px;"></p>
+                    <div class="mb-3">
+                        <input type="text" class="border-1 inputField ps-3 me-3" placeholder="Header Text" id="header" oninput="writeHeader()" onblur="ViewImage()"/>
+                        <span class="colorPicker ">Header Color Picker
+                            <input type="color" name="Font Color" id="headerColor" onchange="writeHeader()">
+                        </span>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="border-1 inputField ps-3" placeholder="Footer Text" id="footer" oninput="writeFooter()" onblur="ViewImage()"/>
+                        <span class="colorPicker ms-3">Footer Color Picker
+                            <input type="color" name="Font Color" id="footerColor" onchange="writeFooter()">
+                        </span>
+                    </div>    
+                        <div class="btn-group mb-5">
+                        <button type="button" class="btn btn-primary btn-outline-dark btn-lg ms-3 mt-2" id="upload" onclick="uploadImage()">
+                            Upload Image
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-outline-light btn-lg ms-5 mt-2" id="view" onclick="ViewImage()">
+                        Refresh Canvas
+                        </button>
+                        <button type="button" class="btn btn-dark btn-outline-info btn-lg ms-5 mt-2" id="download" onclick="download()" disabled>
+                            Download Image
+                        </button>
+                    </div>
+                    <img id="hidden-image" style="display: none; width: 100%;"/>
+     
+        </div>
+        
+        <script>
+
+        loadFile =  function(e){
+            inputImage = document.getElementById('hidden-image');
+            inputImage.src = URL.createObjectURL(event.target.files[0]);
+        }    
+        function uploadImage(){
+            document.getElementById('file').click();
+        }
+
+        function ViewImage(){
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            var img = document.getElementById('hidden-image');
+            ctx.drawImage(img,10,0,canvas.width,canvas.height);
+            var header = document.getElementById('header').value;
+            var footer = document.getElementById('footer').value;
+            if (header != "")
+                writeHeader();
+            if (footer != "")
+                writeFooter();
+  
+        }
+
+        function writeHeader(){
+                if(document.getElementById('download').disabled != true){
+                var header = document.getElementById('header').value;
+                if(header != ''){
+                    var canvax = document.getElementById('canvas')
+                    var ctx = canvax.getContext("2d");
+                    ctx.fillStyle = document.getElementById('headerColor').value;
+                    ctx.font ='40px Arial';
+                    startPoint = 10;
+                    ctx.fillText(header,startPoint,30);
+                }
+            }
+        }
+
+        function writeFooter(){
+            if(document.getElementById('download').disabled != true){
+
+                var footer = document.getElementById('footer').value;
+                if(footer != ''){
+                    var ctx = document.getElementById('canvas').getContext("2d");
+                    ctx.fillStyle = document.getElementById('footerColor').value;
+                    ctx.font ='40px Arial';
+                    startPoint = 10;
+                    vertialPoint = canvas.height * 0.90;
+                    ctx.fillText(footer,startPoint,vertialPoint);
+                }
+            }
+        }
+
+        function download(){
+            var link = document.createElement('a');
+            link.download = 'canvas.png';
+            link.href = document.getElementById('canvas').toDataURL()
+            link.click();
+        }    
+
+            var imgInput = document.getElementById('file');
+            imgInput.addEventListener('change', function(e) {
+                if(e.target.files) {
+                    let imageFile = e.target.files[0]; //here we get the image file
+                    var reader = new FileReader();
+                    reader.readAsDataURL(imageFile);
+                    reader.onloadend = function (e) {
+                    var myImage = new Image(); // Creates image object
+                    myImage.src = e.target.result; // Assigns converted image to image object
+                    myImage.onload = function(ev) {    
+                    var myCanvas = document.getElementById('canvas'); // Creates a canvas object
+                    var myContext = myCanvas.getContext("2d"); // Creates a contect object
+                    myContext.drawImage(myImage,0,0,myCanvas.width,myCanvas.height); // Draws the image on canvas
+                    document.getElementById('download').disabled = false;
+                    }
+                }
+            }
+                    
+        });
+    
+        
+        
+        </script> 
+
+    </body>
+</html>
